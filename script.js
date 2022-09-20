@@ -16,10 +16,9 @@ $button.addEventListener("click", () => {
   });
 });
 
-
 /* another example */
 
-let notification
+/* let notification
 document.addEventListener("visibilitychange", () => {
     if(document.visibilityState === 'hidden') {
         notification = new Notification('Onde você está indo? Você está me deixando?', {
@@ -28,5 +27,28 @@ document.addEventListener("visibilitychange", () => {
         })
     } else {
         notification.close()
-    }
+    } 
 })
+*/
+
+let notification;
+let interval;
+document.addEventListener("visibilitychange", () => { 
+  if (document.visibilityState === "hidden") { // se a aba estiver oculta
+    const leaveDate = new Date(); // data de quando o usuário saiu
+    interval = setInterval(() => { // setInterval executa uma função a cada x tempo
+      notification = new Notification(
+        "Onde você está indo? Você está me deixando?",
+        {
+          body: `Volte para cá, por favor! Você já se foi a ${Math.round(
+            (new Date() - leaveDate) / 1000 // vai mostrar quando tempo se passou em segundos
+          )} segundos`,
+          tag: "volte",
+        }
+      );
+    }, 100); // vai mostrar a cada 100 milisegundos
+  } else {
+    if (interval) clearInterval(interval); // vai parar o setInterval
+    if (notification) notification.close(); // vai fechar a notificação
+  }
+});
